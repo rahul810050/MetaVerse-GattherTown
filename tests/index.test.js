@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 
 const BACKEND_URL = "http://localhost:3000";
+const WS_URL = "ws://localhost:8080";
 
 describe("Authentication", () => {
   test("user should be able to sign up once", async () => {
@@ -836,4 +837,271 @@ describe("admin endpoints", ()=> {
 
 		expect(updatedElementResponse.statusCode).toBe(200);
 	})
+})
+
+describe("websocket tests", ()=> {
+  let adminId;
+  let adminToken;
+  let userId;
+  let userToken;
+  let mapId;
+  let element1Id;
+  let element2Id;
+  let spaceId;
+  let ws1;
+  let ws2;
+  let ws1Message = [];
+  let ws2Message = [];
+  let userX;
+  let userY;
+  let adminX;
+  let adminY;
+
+
+  function waitForAndPopLatestMessage(messageeArray){
+    return new Promise((resolve, reject)=> {
+      if(messageeArray.length > 0){
+        resolve(messageeArray.shift())
+      } else{
+        let interval = setInterval(() => {
+          if(messageeArray.length > 0){
+            resolve(messageeArray.shift());
+            clearTimeout(interval)
+          }
+        }, 100);
+      }
+    })
+  }
+
+  async function setupHTTP(){
+    const username = "cocane" + Math.random();
+    const password = "123456"
+
+    // admin
+    const adminSignupRes = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+      username,
+      password,
+      type: "admin"
+    })
+
+    const adminSigninRes = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+      username,
+      password
+    })
+
+    adminId = adminSignupRes.data.userId;
+    adminToken = adminSigninRes.data.token;
+
+    // user
+    const userSignupRes = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+      username: username + "-user",
+      password,
+      type: "user"
+    })
+
+    const userSigninRes = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+      username,
+      password
+    })
+
+    userId = userSignupRes.data.userId;
+    userToken = userSigninRes.data.token;
+
+    const element1 = await axios.post(
+      `${BACKEND_URL}/api/v1/admin/element`,
+      {
+        imageURL:
+          "https://img.freepik.com/premium-psd/3d-render-avatar-character_23-2150611743.jpg?ga=GA1.1.1201487365.1736583224&semt=ais_hybrid",
+        width: 1,
+        height: 1,
+        static: true,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${adminToken}`,
+        },
+      }
+    );
+
+    const element2 = await axios.post(
+      `${BACKEND_URL}/api/v1/admin/element`,
+      {
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+        width: 1,
+        height: 1,
+        static: true,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${adminToken}`,
+        },
+      }
+    );
+
+    element1Id = element1.data.id;
+    element2Id = element2.data.id;
+
+    const map = await axios.post(`${BACKEND_URL}/api/v1/admin/map`, {
+      thumbnail: "https://thumbnail.com/a.png",
+      dimensions: "100x200",
+      name: "100 person interview room",
+      defaultElements: [
+        {
+          elementId: element1Id,
+          x: 20,
+          y: 20,
+        },
+        {
+          elementId: element2Id,
+          x: 18,
+          y: 20,
+        },
+        {
+          elementId: element2Id,
+          x: 19,
+          y: 20,
+        }
+      ],
+    },{
+			headers: {
+				"authorization": `Bearer ${adminToken}`
+			}
+		});
+
+		mapId = map.id
+
+		const space = await axios.post(`${BACKEND_URL}/api/v1/`, {
+			name: "test",
+			dimensions: "100x200",
+			mapId: mapId
+		},
+		{
+			headers: {
+				"authorization": `Bearer ${userToken}`
+			}
+		}
+	)
+
+	spaceId = space.data.id;
+  }
+
+  async function setupWS(){
+    ws1 = new WebSocket(WS_URL);
+    
+    await new Promise(r => {
+      ws1.onopen = r;
+    })
+    ws1.onmessage = (event)=> {
+      ws1Message.push(JSON.stringify(event.data));
+    }
+    
+    ws2 = new WebSocket(WS_URL);
+
+    await new Promise(r => {
+      ws2.onopen = r;
+    })
+
+
+    ws2.onmessage = (event)=> {
+      ws2Message.push(JSON.stringify(event.data));
+    }
+
+    
+
+  }
+
+  beforeAll(async ()=> {
+    setupHTTP()
+    setupWS()
+  })
+
+  test("get back acknowledgement for joining the space", async ()=> {
+    ws1.send(JSON.stringify({
+      "type": "join",
+      "payload": {
+        "spaceId": spaceId,
+        "token": adminToken
+      }
+    }))
+    
+    const message1 = await waitForAndPopLatestMessage(ws1Message)
+
+    ws2.send(JSON.stringify({
+      "type": "join",
+      "payload": {
+        "spaceId": spaceId,
+        "token": userToken
+      }
+    }))
+
+    const message2 = await waitForAndPopLatestMessage(ws2Message)
+    const message3 = await waitForAndPopLatestMessage(ws1Message)
+
+    expect(message1.type).toBe("space-joined")
+    expect(message2.type).toBe("space-joined")
+
+    expect(message1.payload.users.length).toBe(0);
+    expect(message2.payload.users.length).toBe(1);
+    expect(message3.type).toBe("user-join");
+    expect(message3.payload.x).toBe(message2.payload.spawn.x);
+    expect(message3.payload.y).toBe(message2.payload.spawn.x);
+
+    adminX = message1.payload.spawn.x;
+    adminY = message1.payload.spawn.y;
+    userX = message2.payload.spawn.x;
+    userY = message2.payload.spawn.y;
+  })
+
+  test("user is not able to move across the wall", async ()=> {
+    ws1.send(JSON.stringify({
+      type: "move",
+      payload: {
+        x: 100000,
+        y: 100000
+      }
+    }))
+    const message = await waitForAndPopLatestMessage(ws1Message);
+    expect(message.type).toBe("movement-rejected")
+    expect(message.payload.x).toBe(adminX)
+    expect(message.payload.y).toBe(adminY)
+  })
+
+  
+  test("user is not able to move two blocks at the same time", async ()=> {
+    ws1.send(JSON.stringify({
+      type: "move",
+      payload: {
+        x: adminX + 2,
+        y: adminY
+      }
+    }))
+    const message = await waitForAndPopLatestMessage(ws1Message);
+    expect(message.type).toBe("movement-rejected")
+    expect(message.payload.x).toBe(adminX)
+    expect(message.payload.y).toBe(adminY)
+  })
+
+  test("correct moovement should be broadcasted to the other sockets in the same room", async ()=> {
+    ws1.send(JSON.stringify({
+      type: "move",
+      payload: {
+        x: adminX + 1,
+        y: adminY,
+        userId: adminId
+      }
+    }))
+    const message = await waitForAndPopLatestMessage(ws2Message);
+    expect(message.type).toBe("movement")
+    expect(message.payload.x).toBe(adminX + 1)
+    expect(message.payload.y).toBe(adminY)
+  })
+  
+  test("if a user leaves then the other users get a leave event", async ()=> {
+    ws1.close()
+    const message = await waitForAndPopLatestMessage(ws2Message);
+    expect(message.type).toBe("user-left")
+    expect(message.payload.userId).toBe(adminId);
+  })
+
 })
