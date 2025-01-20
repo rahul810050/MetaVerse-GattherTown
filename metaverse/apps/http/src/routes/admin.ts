@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createElementSchema, updateElementSchema } from "../types";
+import { createAvatarSchema, createElementSchema, createMapSchema, updateElementSchema } from "../types";
 import { adminMiddleWare } from "../middlewares/adminMiddleWare";
 import client from '@repo/db/client'
 
@@ -76,9 +76,66 @@ adminRouter.put("/element/:elementId", adminMiddleWare, async function(req, res)
 		})
 	}
 })
-adminRouter.get("/avatar", async function(req, res){
 
+// endpoint to create an avatar
+adminRouter.get("/avatar", adminMiddleWare, async function(req, res){
+	const parsedData = createAvatarSchema.safeParse(req.body);
+	if(!parsedData.success){
+		res.status(400).json({
+			msg: "invalid credentials"
+		})
+		return
+	}
+
+	try{
+		const avatar = await client.avatar.create({
+			data: {
+				imageUrl: parsedData.data.imageUrl,
+				name: parsedData.data.name
+			}
+		})
+		res.status(200).json({
+			id: avatar.id
+		})
+	} catch(e){
+		res.status(400).json({
+			error: (e as Error).message
+		})
+	}
 })
-adminRouter.post("/map", async function(req, res){
 
+// endpoint to create a map
+adminRouter.post("/map", adminMiddleWare,async function(req, res){
+	const parsedData = createMapSchema.safeParse(req.body);
+	if(!parsedData.success){
+		res.status(400).json({
+			msg: "invalid credentials"
+		})
+		return
+	}
+
+	try{
+		const mapCreation = await client.map.create({
+			data: {
+				thumbnail: parsedData.data.thumbnail,
+				name: parsedData.data.name,
+				width: Number(parsedData.data.dimensions.split("x")[0]), 
+				height: Number(parsedData.data.dimensions.split("x")[1]),
+				mapElements: {
+					create: parsedData.data.defaultElements.map(m=> ({
+						elementId: m.elementId,
+						x: m.x,
+						y: m.y
+					}))
+				}
+			}
+		})
+		res.status(200).json({
+			id: mapCreation.id
+		})
+	} catch(e){
+		res.status(400).json({
+			error: (e as Error).message
+		})
+	}
 })

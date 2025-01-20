@@ -117,15 +117,40 @@ router.post("/signin", userMiddleWare || adminMiddleWare,async (req, res) => {
 });
 
 
-
-
 router.get("/elements", async (req, res)=> {
-	res.send("this is signin route");
+	try{
+    const element = await client.element.findMany();
+    res.status(200).json({
+      elements: element.map(e => ({
+        id: e.id,
+        imageUrl: e.imageUrl,
+        width: e.width,
+        height: e.height,
+        static: e.static
+      }))
+    })
+  } catch(e){
+    res.status(400).json({
+      error: (e as Error).message
+    })
+  }
 })
 
 
 router.get("/avatars", async (req, res)=> {
-	res.send("this is signin route");
+	try{
+    const avatar = await client.avatar.findMany();
+    res.status(200).json({
+      avatars: avatar.map(m=> ({
+        id: m.id,
+        imageUrl: m.imageUrl,
+        name: m.name
+      }))
+    })
+  } catch(e){
+    error: (e as Error).message
+  }
+
 })
 
 
