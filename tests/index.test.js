@@ -1,122 +1,142 @@
-const { default: axios2, get } = require("axios");
+const axios2 = require("axios");
 
 const BACKEND_URL = "http://localhost:3000";
 const WS_URL = "ws://localhost:8080";
 
+// Axios Wrapper for Simplified Requests
 const axios = {
-  post: async(...arg)=> {
-    try{
-      const res = await axios2(...arg);
-      return res
-    } catch(error){
-      return error.response
+  post: async (url, data) => {
+    try {
+      const res = await axios2.post(url, data);
+      return res;
+    } catch (error) {
+      return error.response || { status: 500, data: { error: "Unknown Error" } };
     }
   },
-  put: async(...arg)=> {
-    try{
-      const res = await axios2(...arg);
-      return res
-    } catch(error){
-      return error.response
+  put: async (url, data) => {
+    try {
+      const res = await axios2.put(url, data);
+      return res;
+    } catch (error) {
+      return error.response || { status: 500, data: { error: "Unknown Error" } };
     }
   },
-  delete: async(...arg)=> {
-    try{
-      const res = await axios2(...arg);
-      return res
-    } catch(error){
-      return error.response
+  delete: async (url) => {
+    try {
+      const res = await axios2.delete(url);
+      return res;
+    } catch (error) {
+      return error.response || { status: 500, data: { error: "Unknown Error" } };
     }
   },
-  get: async(...arg)=> {
-    try{
-      const res = await axios2(...arg);
-      return res
-    } catch(error){ 
-      return error.response
+  get: async (url) => {
+    try {
+      const res = await axios2.get(url);
+      return res;
+    } catch (error) {
+      return error.response || { status: 500, data: { error: "Unknown Error" } };
     }
   },
-}
+};
 
-describe("Authentication", () => {
-  test("user should be able to sign up once", async () => {
-    const username = "concane";
+// Test Suite
+describe("Authentication API Tests", () => {
+  test("User should be able to sign up once", async () => {
+    const username = `concane${Math.random().toString(36).substring(7)}`;
     const password = "123456";
+
+    // First Signup Attempt
     const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
       username,
       password,
       type: "admin",
     });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body.userId).toBeDefined();
+    expect(response.status).toBe(200);
+    expect(response.data.userId).toBeDefined();
 
-    const againResponse = await axios.post(
-      `${BACKEND_URL}/api/v1/signup`,
-      {
-        username,
-        password,
-        type: "admin",
-      }
-    );
-
-    expect(againResponse.statusCode).toBe(400);
-  });
-
-  test("signup fails if the username is empty", async () => {
-    const username = "cocane";
-    const password = "123456";
-    const res = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+    // Duplicate Signup Attempt
+    const againResponse = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+      username,
       password,
       type: "admin",
     });
-    expect(res.statusCode).toBe(400);
+
+    expect(againResponse.status).toBe(400);
+    expect(againResponse.data.msg).toBe("user already exist");
   });
 
-  test("sign in succeeds if the username and password is correct", async () => {
-    const username = `cocane${Math.random()}`;
+  test("Signup fails if the username is empty", async () => {
     const password = "123456";
 
+    const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+      password,
+      type: "admin",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.data.error).toBeDefined(); // Validation error
+  });
+
+  test("Sign in succeeds with correct username and password", async () => {
+    const username = `rahul${Math.random().toString(36).substring(7)}`;
+    const password = "123456";
+
+    // Sign Up First
     await axios.post(`${BACKEND_URL}/api/v1/signup`, {
       username,
       password,
       type: "admin",
     });
 
-    const res = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+    // Sign In with Correct Credentials
+    const signinResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
       username,
       password,
-      type: "admin",
     });
-    expect(res.statusCode).toBe(200);
-    expect(res.body.token).toBeDefined();
+
+    expect(signinResponse.status).toBe(200);
+    expect(signinResponse.data.token).toBeDefined();
   });
 
-  test("signin fails if the username and password are wrong", async () => {
-    const username = `cocane${Math.random()}`;
-    const password = `1234445${Math.random()}`;
+  test("Sign in fails with incorrect username or password", async () => {
+    const username = `rahul${Math.random().toString(36).substring(7)}`;
+    const password = "123456";
 
+    // Sign Up First
     await axios.post(`${BACKEND_URL}/api/v1/signup`, {
       username,
       password,
       type: "admin",
     });
 
-    const res = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+    // Sign In with Incorrect Username
+    const wrongUsernameResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
       username: "wrongUsername",
       password,
-      type: "admin",
     });
-    expect(res.statusCode).toBe(403);
+
+    expect(wrongUsernameResponse.status).toBe(403);
+    expect(wrongUsernameResponse.data.msg).toBe("User not found");
+
+    // Sign In with Incorrect Password
+    const wrongPasswordResponse = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+      username,
+      password: "wrongPassword",
+    });
+
+    expect(wrongPasswordResponse.status).toBe(403);
+    expect(wrongPasswordResponse.data.msg).toBe("Invalid password");
   });
 });
+
 
 // describe("user metadata endpoints", () => {
 //   let token = "";
 //   let avatarId = "";
 
 //   beforeAll(async () => {
-//     const username = `cocane${Math.random()}`;
+//     const username = `rahul${Math.random()}`;
 //     const password = "123456";
 
 //     await axios.post(`${BACKEND_URL}/api/v1/users/signup`, {
@@ -151,7 +171,7 @@ describe("Authentication", () => {
 //         },
 //       }
 //     );
-//     expect(res.statusCode).toBe(400);
+//     expect(res.status).toBe(400);
 //   });
 
 //   test("user can update their metadata with right avatar id", async () => {
@@ -166,14 +186,14 @@ describe("Authentication", () => {
 //         },
 //       }
 //     );
-//     expect(res.statusCode).toBe(200);
+//     expect(res.status).toBe(200);
 //   });
 
 //   test("user cant update their metadata if the auth headers is not present", async () => {
 //     const res = await axios.post(`${BACKEND_URL}/api/v1/users/metadata`, {
 //       avatarId,
 //     });
-//     expect(res.statusCode).toBe(403);
+//     expect(res.status).toBe(403);
 //   });
 // });
 
@@ -183,7 +203,7 @@ describe("Authentication", () => {
 //   let token;
 
 //   beforeAll(async () => {
-//     const username = `cocane${Math.random()}`;
+//     const username = `rahul${Math.random()}`;
 //     const password = "123456";
 
 //     const signupRes = await axios.post(`${BACKEND_URL}/api/v1/users/signup`, {
@@ -242,7 +262,7 @@ describe("Authentication", () => {
 // 	let userToken;
 
 //   beforeAll(async () => {
-//     const username = `cocane${Math.random()}`;
+//     const username = `rahul${Math.random()}`;
 //     const password = "123456";
 // 		// admin 
 //     const signupRes = await axios.post(`${BACKEND_URL}/api/v1/users/signup`, {
@@ -381,7 +401,7 @@ describe("Authentication", () => {
 // 			}
 // 		}
 // 	)
-// 		expect(response.statusCode).toBe(400);
+// 		expect(response.status).toBe(400);
 // 	})
 
 // 	test("user is not able to delete a space that does not exist", async ()=> {
@@ -394,7 +414,7 @@ describe("Authentication", () => {
 // 			}
 // 		}
 // 	)
-// 		expect(response.statusCode).toBe(400);
+// 		expect(response.status).toBe(400);
 // 	})
 
 // 	test("user is able to delete a space that does not exist", async ()=> {
@@ -418,7 +438,7 @@ describe("Authentication", () => {
 // 			}
 // 		}
 // 	)
-// 		expect(deleteResponse.statusCode).toBe(200);
+// 		expect(deleteResponse.status).toBe(200);
 // 	})
 
 // 	test("user is not able to delete a space created by a different user", async ()=> {
@@ -445,7 +465,7 @@ describe("Authentication", () => {
 // 			}
 // 		}
 // 	)
-// 		expect(deleteResponse.statusCode).toBe(403);
+// 		expect(deleteResponse.status).toBe(403);
 // 	})
 
 // 	test("admin has no space initially", async ()=> {
@@ -501,7 +521,7 @@ describe("Authentication", () => {
 // 	let spaceId;
 
 // 	beforeAll(async () => {
-//     const username = `cocane${Math.random()}`;
+//     const username = `rahul${Math.random()}`;
 //     const password = "123456";
 // 		// admin 
 //     const signupRes = await axios.post(`${BACKEND_URL}/api/v1/users/signup`, {
@@ -622,7 +642,7 @@ describe("Authentication", () => {
 // 					"authorization": `Bearer ${userToken}`
 // 				}
 // 			});
-// 		expect(response.statusCode).toBe(400);
+// 		expect(response.status).toBe(400);
 // 	})
 
 // 	test("Correct spaceid returns all the elements",async ()=> {
@@ -693,7 +713,7 @@ describe("Authentication", () => {
 // 			}
 // 		})
 
-// 		expect(response.statusCode).toBe(404);
+// 		expect(response.status).toBe(404);
 // 	})
 
 	
@@ -707,7 +727,7 @@ describe("Authentication", () => {
 // 	let userToken;
 
 // 	beforeAll(async () => {
-//     const username = `cocane${Math.random()}`;
+//     const username = `rahul${Math.random()}`;
 //     const password = "123456";
 // 		// admin 
 //     const signupRes = await axios.post(`${BACKEND_URL}/api/v1/users/signup`, {
@@ -790,10 +810,10 @@ describe("Authentication", () => {
 // 			}
 // 		})
 
-// 		expect(elementResponse.statusCode).toBe(403);
-// 		expect(mapResponse.statusCode).toBe(403);
-// 		expect(avatarResponse.statusCode).toBe(403);
-// 		expect(updatedElementResponse.statusCode).toBe(403);
+// 		expect(elementResponse.status).toBe(403);
+// 		expect(mapResponse.status).toBe(403);
+// 		expect(avatarResponse.status).toBe(403);
+// 		expect(updatedElementResponse.status).toBe(403);
 
 
 // 	})
@@ -837,9 +857,9 @@ describe("Authentication", () => {
 // 			}
 // 		})
 		
-// 		expect(elementResponse.statusCode).toBe(200);
-// 		expect(mapResponse.statusCode).toBe(200);
-// 		expect(avatarResponse.statusCode).toBe(200);
+// 		expect(elementResponse.status).toBe(200);
+// 		expect(mapResponse.status).toBe(200);
+// 		expect(avatarResponse.status).toBe(200);
 		
 // 	})
 
@@ -870,7 +890,7 @@ describe("Authentication", () => {
 // 			}
 // 		})
 
-// 		expect(updatedElementResponse.statusCode).toBe(200);
+// 		expect(updatedElementResponse.status).toBe(200);
 // 	})
 // })
 
@@ -909,7 +929,7 @@ describe("Authentication", () => {
 //   }
 
 //   async function setupHTTP(){
-//     const username = "cocane" + Math.random();
+//     const username = "rahul" + Math.random();
 //     const password = "123456"
 
 //     // admin

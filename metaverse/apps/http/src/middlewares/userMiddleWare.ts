@@ -1,0 +1,32 @@
+import { NextFunction, Request, Response } from "express";
+import { JWT_PASSWORD } from "../config";
+import jwt  from "jsonwebtoken";
+
+
+export const userMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
+	const header = req.headers.authorization; // 
+	if (!header) {
+		res.status(401).json({
+			msg: "Unauthorized"
+		});
+		return;
+	}
+	const token = header.split(" ")[1]; // [Bearer, token]
+	if(!token){
+		res.status(401).json({
+			msg: "Unauthorized"
+		})
+		return;
+	}
+	try{
+		const decoded = await jwt.verify(token, JWT_PASSWORD) as jwt.JwtPayload;
+		if(decoded.role === "User"){
+			req.userId = decoded.id;
+			next();
+		}
+	} catch(err){
+		res.status(401).json({
+			msg: "Unauthorized"
+		})
+	}
+}
