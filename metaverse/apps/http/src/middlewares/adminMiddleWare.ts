@@ -5,14 +5,15 @@ import jwt from "jsonwebtoken";
 export const adminMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
 	const header = req.headers.authorization; // 
 	if (!header) {
-		res.status(401).json({
+		res.status(403).json({
 			msg: "Unauthorized"
 		});
 		return;
 	}
 	const token = header.split(" ")[1]; // [Bearer, token]
+	console.log(token);
 	if(!token){
-		res.status(401).json({
+		res.status(403).json({
 			msg: "Unauthorized"
 		})
 		return;
@@ -24,7 +25,7 @@ export const adminMiddleWare = async (req: Request, res: Response, next: NextFun
 			next();
 		}
 	} catch(err){
-		res.status(401).json({
+		res.status(403).json({
 			msg: "Unauthorized"
 		})
 	}

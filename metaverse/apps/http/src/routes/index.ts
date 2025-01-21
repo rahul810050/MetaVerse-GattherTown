@@ -53,7 +53,7 @@ router.post("/signup", async (req, res)=> {
 })
 
 
-router.post("/signin", userMiddleWare || adminMiddleWare,async (req, res) => {
+router.post("/signin", async (req, res) => {
   const parsedData = signinSchema.safeParse(req.body);
 
   if (!parsedData.success) {
@@ -91,7 +91,7 @@ router.post("/signin", userMiddleWare || adminMiddleWare,async (req, res) => {
     }
 
     // Generate JWT token
-    const jwtSecret = JWT_PASSWORD  ; // Fallback
+    const jwtSecret = "secret"  ; // Fallback
 		// console.log("jwtSecret", jwtSecret)
     const token = jwt.sign(
       {
@@ -101,11 +101,11 @@ router.post("/signin", userMiddleWare || adminMiddleWare,async (req, res) => {
       jwtSecret,
       { expiresIn: "1h" } // Token expiration time
     );
+    // console.log(token);
 
     // Success response
     res.status(200).json({
-      token,
-      msg: "Sign-in successful",
+      token
     });
   } catch (err) {
     // console.error("Error in Sign-In:", err); // Debugging

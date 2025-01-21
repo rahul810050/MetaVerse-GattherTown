@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { updateMetadataSchema } from "../types";
 import client from "@repo/db/client";
+import { adminMiddleWare } from "../middlewares/adminMiddleWare";
 
 export const userRouter = Router();
 
-userRouter.post("/metadata", async (req, res) => {
+userRouter.post("/metadata", adminMiddleWare,async (req, res) => {
 	const parsedData = updateMetadataSchema.safeParse(req.body);
+	console.log(parsedData.data?.avatarId);
 	if(!parsedData.success){
 		res.status(403).json({
 			msg: "Bad Request"

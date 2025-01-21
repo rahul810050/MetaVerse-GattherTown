@@ -80,6 +80,7 @@ adminRouter.put("/element/:elementId", adminMiddleWare, async function(req, res)
 // endpoint to create an avatar
 adminRouter.get("/avatar", adminMiddleWare, async function(req, res){
 	const parsedData = createAvatarSchema.safeParse(req.body);
+	console.log(parsedData.data);
 	if(!parsedData.success){
 		res.status(400).json({
 			msg: "invalid credentials"
@@ -95,7 +96,7 @@ adminRouter.get("/avatar", adminMiddleWare, async function(req, res){
 			}
 		})
 		res.status(200).json({
-			id: avatar.id
+			avatarId: avatar.id
 		})
 	} catch(e){
 		res.status(400).json({
