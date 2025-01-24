@@ -78,7 +78,7 @@ adminRouter.put("/element/:elementId", adminMiddleWare, async function(req, res)
 })
 
 // endpoint to create an avatar
-adminRouter.get("/avatar", adminMiddleWare, async function(req, res){
+adminRouter.post("/avatar", adminMiddleWare, async function(req, res){
 	const parsedData = createAvatarSchema.safeParse(req.body);
 	console.log(parsedData.data);
 	if(!parsedData.success){

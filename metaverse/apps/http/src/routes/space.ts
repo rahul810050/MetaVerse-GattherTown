@@ -110,6 +110,45 @@ spaceRouter.get("/all", userMiddleWare,async (req, res)=> {
 	}
 })
 
+// endpoint to delete an element from a space
+spaceRouter.delete("/element", userMiddleWare,async (req, res)=> {
+	const parsedData = DeleteElementSchema.safeParse(req.body);
+	if(!parsedData.success){
+		res.status(400).json({error: parsedData.error.errors});
+		return;
+	}
+	try{
+		const spaceElement = await client.spaceElement.findFirst({
+			where: {
+				id: parsedData.data.id,
+			},
+			include: {
+				space: true
+			}
+		})
+
+		if(!spaceElement?.space.creatorId || spaceElement.space.creatorId !== req.userId){
+			res.status(400).json({
+				msg: "unauthorized"
+			})
+			return;
+		}
+
+		await client.spaceElement.delete({
+			where: {
+				id: parsedData.data.id
+			}
+		})
+		
+		res.status(200).json({
+			msg: "element deleted successfully"
+		})
+	} catch(e){
+		res.status(400).json({
+			error: (e as Error).message
+		})
+	}
+})
 
 // endpoint to delete a space
 spaceRouter.delete("/:spaceId", userMiddleWare,async (req, res)=> {
@@ -178,6 +217,13 @@ spaceRouter.post("/element", userMiddleWare, async (req, res)=> {
 			return;
 		}
 
+		if(parsedData.data.x < 0 || parsedData.data.y < 0 || parsedData.data.x > space?.width! || parsedData.data.y > space?.height!){
+			res.status(403).json({
+				msg: "point is outside of the boundry"
+			})
+			return; 
+		}
+
 		await client.spaceElement.create({
 			data: {
 				elementId: parsedData.data.elementId,
@@ -188,46 +234,6 @@ spaceRouter.post("/element", userMiddleWare, async (req, res)=> {
 		})
 		res.status(200).json({
 			msg: "element added successfully"
-		})
-	} catch(e){
-		res.status(400).json({
-			error: (e as Error).message
-		})
-	}
-})
-
-// endpoint to delete an element from a space
-spaceRouter.delete("/element", userMiddleWare,async (req, res)=> {
-	const parsedData = DeleteElementSchema.safeParse(req.body);
-	if(!parsedData.success){
-		res.status(400).json({error: parsedData.error.errors});
-		return;
-	}
-	try{
-		const spaceElement = await client.spaceElement.findFirst({
-			where: {
-				id: parsedData.data.id,
-			},
-			include: {
-				space: true
-			}
-		})
-
-		if(!spaceElement?.space.creatorId || spaceElement.space.creatorId !== req.userId){
-			res.status(400).json({
-				msg: "unauthorized"
-			})
-			return;
-		}
-
-		await client.spaceElement.delete({
-			where: {
-				id: parsedData.data.id
-			}
-		})
-		
-		res.status(200).json({
-			msg: "element deleted successfully"
 		})
 	} catch(e){
 		res.status(400).json({

@@ -1,7 +1,7 @@
 {
-  "name": "http",
+  "name": "ws",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "build": "npx esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
     "start": "node dist/index.js",
@@ -13,13 +13,11 @@
   "description": "",
   "dependencies": {
     "@repo/db": "workspace:*",
-    "@types/bcrypt": "^5.0.2",
-    "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
-    "bcrypt": "^5.1.1",
+    "@types/ws": "^8.5.14",
     "esbuild": "^0.24.2",
-    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "zod": "^3.24.1"
+    "typescript": "^5.7.3",
+    "ws": "^8.18.0"
   }
 }
