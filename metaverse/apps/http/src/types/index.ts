@@ -17,7 +17,7 @@ export const updateMetadataSchema = z.object({
 export const createSpaceSchema = z.object({
 	name: z.string(),
 	dimensions: z.string().regex(/^[0-9]{1,4}x[0-9]{1,4}$/),
-	mapId: z.string(),
+	mapId: z.string().optional(),
 })
 export const addElementSchema = z.object({
 	spaceId: z.string(),

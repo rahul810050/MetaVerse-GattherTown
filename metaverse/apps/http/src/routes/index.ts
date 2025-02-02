@@ -89,16 +89,17 @@ router.post("/signin", async (req, res) => {
       });
       return;
     }
+    console.log(user.role);
 
     // Generate JWT token
-    const jwtSecret = "secret"  ; // Fallback
+    // const jwtSecret = "secret"  ; // Fallback
 		// console.log("jwtSecret", jwtSecret)
     const token = jwt.sign(
       {
         userId: user.id,
         role: user.role,
       },
-      jwtSecret,
+      JWT_PASSWORD,
       { expiresIn: "1h" } // Token expiration time
     );
     // console.log(token);

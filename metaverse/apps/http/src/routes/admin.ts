@@ -77,10 +77,11 @@ adminRouter.put("/element/:elementId", adminMiddleWare, async function(req, res)
 	}
 })
 
+
 // endpoint to create an avatar
 adminRouter.post("/avatar", adminMiddleWare, async function(req, res){
 	const parsedData = createAvatarSchema.safeParse(req.body);
-	console.log(parsedData.data);
+	// console.log(parsedData.data);
 	if(!parsedData.success){
 		res.status(400).json({
 			msg: "invalid credentials"
@@ -89,6 +90,7 @@ adminRouter.post("/avatar", adminMiddleWare, async function(req, res){
 	}
 
 	try{
+		// console.log(req.userId);
 		const avatar = await client.avatar.create({
 			data: {
 				imageUrl: parsedData.data.imageUrl,
@@ -104,6 +106,7 @@ adminRouter.post("/avatar", adminMiddleWare, async function(req, res){
 		})
 	}
 })
+
 
 // endpoint to create a map
 adminRouter.post("/map", adminMiddleWare,async function(req, res){

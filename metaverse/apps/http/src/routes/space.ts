@@ -1,14 +1,17 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { userMiddleWare } from "../middlewares/userMiddleWare";
 import { adminMiddleWare } from "../middlewares/adminMiddleWare";
 import { addElementSchema, createSpaceSchema, DeleteElementSchema } from "../types";
 import client from "@repo/db/client";
+import { userAdminMiddleware } from "../middlewares/userAdminMiddleware";
 
 
 export const spaceRouter = Router();
 
+
+
 // endpoint to create a new space
-spaceRouter.post("/", userMiddleWare || adminMiddleWare ,async (req, res)=> {
+spaceRouter.post("/", userAdminMiddleware ,async (req, res)=> {
 	const parsedData = createSpaceSchema.safeParse(req.body);
 	if(!parsedData.success){
 		res.status(400).json({error: parsedData.error.errors});
@@ -81,7 +84,7 @@ spaceRouter.post("/", userMiddleWare || adminMiddleWare ,async (req, res)=> {
 
 
 // endpoint to get all spaces
-spaceRouter.get("/all", userMiddleWare,async (req, res)=> {
+spaceRouter.get("/all", userAdminMiddleware,async (req, res)=> {
 	try{
 		const allSpaces = await client.space.findMany({
 			where: {
@@ -151,7 +154,7 @@ spaceRouter.delete("/element", userMiddleWare,async (req, res)=> {
 })
 
 // endpoint to delete a space
-spaceRouter.delete("/:spaceId", userMiddleWare,async (req, res)=> {
+spaceRouter.delete("/:spaceId", userAdminMiddleware,async (req, res)=> {
 	const spaceId = req.params.spaceId;
 	try{
 		const space = await client.space.findUnique({
@@ -192,7 +195,7 @@ spaceRouter.delete("/:spaceId", userMiddleWare,async (req, res)=> {
 })
 
 // endpoint to add a new element in a space
-spaceRouter.post("/element", userMiddleWare, async (req, res)=> {
+spaceRouter.post("/element", userAdminMiddleware, async (req, res)=> {
 	const parsedData = addElementSchema.safeParse(req.body);
 	if(!parsedData.success){
 		res.status(400).json({error: parsedData.error.errors});
@@ -244,7 +247,7 @@ spaceRouter.post("/element", userMiddleWare, async (req, res)=> {
 
 
 // endpoint to get a space by id
-spaceRouter.get("/:spaceId", userMiddleWare, async (req, res)=> {
+spaceRouter.get("/:spaceId", userAdminMiddleware, async (req, res)=> {
 	try{
 		const space = await client.space.findUnique({
 			where: {
