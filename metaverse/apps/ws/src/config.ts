@@ -1,1 +1,1 @@
-export const JWT_PASSWORD = "kuhksdfgjkhdfsjkhaiuyerwiuyer"
+export const JWT_PASSWORD = "default-key"

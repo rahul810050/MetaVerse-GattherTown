@@ -6,6 +6,14 @@ const app = express();
 
 app.use(express.json());
 
+// app.use((req, res, next) => {
+// 	console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+// 	console.log("Headers:", req.headers);
+// 	console.log("Body:", req.body);
+// 	console.log("Query Params:", req.query);
+// 	next(); // Continue to the next middleware or route handler
+// });
+
 app.use("/api/v1/", router)
 
 function main(){

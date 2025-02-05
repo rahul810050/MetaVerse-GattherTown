@@ -1,7 +1,7 @@
 const axios2 = require("axios");
 
 const BACKEND_URL = "http://localhost:3000";
-const WS_URL = "ws://localhost:8080";
+const WS_URL = "ws://localhost:3001";
 
 // Axios Wrapper for Simplified Requests
 const axios = {
@@ -268,7 +268,7 @@ const axios = {
 //     },
 // 		{
 // 			headers: {
-// 				"authorization": `${token}`
+// 				authorization: `${token}`
 // 			}
 // 		});
 
@@ -397,7 +397,7 @@ const axios = {
 //       ],
 //     },{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		});
 
@@ -412,7 +412,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -427,7 +427,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -441,7 +441,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -455,7 +455,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -469,7 +469,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -479,7 +479,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -495,7 +495,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -506,7 +506,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${differentUserToken}`
+// 				authorization: `Bearer ${differentUserToken}`
 // 			}
 // 		}
 // 	)
@@ -517,7 +517,7 @@ const axios = {
 // 		const response = await axios.get(`${BACKEND_URL}/api/v1/space/all`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${adminToken}`
+// 					authorization: `Bearer ${adminToken}`
 // 				}
 // 			}
 // 		);
@@ -531,7 +531,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		}
 // 	)
@@ -539,7 +539,7 @@ const axios = {
 // 	const response = await axios.get(`${BACKEND_URL}/api/v1/space/all`, 
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		}
 // 	);
@@ -659,7 +659,7 @@ const axios = {
 //       ],
 //     },{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		});
 
@@ -672,7 +672,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		}
 // 	)
@@ -684,7 +684,7 @@ const axios = {
 // 		const response = await axios.get(`${BACKEND_URL}/api/v1/space/123kjshdfkhj`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${userToken}`
+// 					authorization: `Bearer ${userToken}`
 // 				}
 // 			});
 // 		expect(response.status).toBe(400);
@@ -694,7 +694,7 @@ const axios = {
 // 		const response = await axios.get(`${BACKEND_URL}/api/v1/space/${spaceId}`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${userToken}`
+// 					authorization: `Bearer ${userToken}`
 // 				}
 // 			});
 // 		expect(response.data.dimensions).toBe("100x200");
@@ -705,7 +705,7 @@ const axios = {
 // 		const response = await axios.get(`${BACKEND_URL}/api/v1/space/${spaceId}`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${userToken}`
+// 					authorization: `Bearer ${userToken}`
 // 				}
 // 			});
 
@@ -716,7 +716,7 @@ const axios = {
 // 		const newResponse = await axios.get(`${BACKEND_URL}/api/v1/space/${spaceId}`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${userToken}`
+// 					authorization: `Bearer ${userToken}`
 // 				}
 // 			});
 // 		expect(newResponse.data.elements.length).toBe(2);
@@ -731,14 +731,14 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		})
 
 // 		const response = await axios.get(`${BACKEND_URL}/api/v1/space/${spaceId}`,
 // 			{
 // 				headers: {
-// 					"authorization": `Bearer ${userToken}`
+// 					authorization: `Bearer ${userToken}`
 // 				}
 // 			})
 
@@ -754,7 +754,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		})
 
@@ -833,7 +833,7 @@ const axios = {
 //       defaultElements: [],
 //     },{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		});
 
@@ -843,7 +843,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		})
 // 		const updatedElementResponse = await axios.put(`${BACKEND_URL}/api/v1/admin/element/123`, {
@@ -851,7 +851,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${userToken}`
+// 				authorization: `Bearer ${userToken}`
 // 			}
 // 		})
 
@@ -888,7 +888,7 @@ const axios = {
 //       defaultElements: [],
 //     },{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		});
 
@@ -898,7 +898,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		})
 		
@@ -931,7 +931,7 @@ const axios = {
 // 		},
 // 		{
 // 			headers: {
-// 				"authorization": `Bearer ${adminToken}`
+// 				authorization: `Bearer ${adminToken}`
 // 			}
 // 		})
 
@@ -975,118 +975,149 @@ describe("websocket tests", ()=> {
     })
   }
 
-  async function setupHTTP(){
-    const username = "rahul" + Math.random();
-    const password = "123456"
+  async function setupHTTP() {
+    const username = "rahul" + Math.random().toString(36).substring(7);
+    const password = "123456";
 
-    // admin
+    // Admin Signup
     const adminSignupRes = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
-      username,
-      password,
-      type: "admin"
-    })
+        username,
+        password,
+        type: "admin"
+    });
 
+    // Admin Signin
     const adminSigninRes = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
-      username,
-      password
-    })
+        username,
+        password
+    });
 
-    adminId = adminSignupRes.data.userId;
-    adminToken = adminSigninRes.data.token;
+    const adminId = adminSignupRes.data.userId;
+    const adminToken = adminSigninRes.data.token;
 
-    // user
+    console.log("Admin ID:", adminId);
+    console.log("Admin Token:", adminToken);
+
+    // Ensure admin token exists
+    if (!adminToken) {
+        throw new Error("Admin authentication failed: Token is missing");
+    }
+
+    // User Signup
     const userSignupRes = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
-      username: username + "-user",
-      password,
-      type: "user"
-    })
+        username: username + "user",
+        password,
+        type: "user"
+    });
 
+    // User Signin
     const userSigninRes = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
-      username,
-      password
-    })
+        username: username + "user", // Fix: Sign in with correct username
+        password
+    });
 
-    userId = userSignupRes.data.userId;
-    userToken = userSigninRes.data.token;
+    const userId = userSignupRes.data.userId;
+    const userToken = userSigninRes.data.token;
 
+    console.log("User ID:", userId);
+    
+    // Ensure user token exists
+    if (!userToken) {
+      throw new Error("User authentication failed: Token is missing");
+    }
+    console.log("User Token:", userToken);
+
+    // Create elements
     const element1 = await axios.post(
-      `${BACKEND_URL}/api/v1/admin/element`,
-      {
-        imageURL:
-          "https://img.freepik.com/premium-psd/3d-render-avatar-character_23-2150611743.jpg?ga=GA1.1.1201487365.1736583224&semt=ais_hybrid",
-        width: 1,
-        height: 1,
-        static: true,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${adminToken}`,
+        `${BACKEND_URL}/api/v1/admin/element`,
+        {
+            imageUrl: "https://img.freepik.com/premium-psd/3d-render-avatar-character_23-2150611743.jpg?ga=GA1.1.1201487365.1736583224&semt=ais_hybrid",
+            width: 1,
+            height: 1,
+            static: true
         },
-      }
+        {
+            headers: {
+                authorization: adminToken, // Using token without "Bearer"
+            },
+        }
     );
 
     const element2 = await axios.post(
-      `${BACKEND_URL}/api/v1/admin/element`,
-      {
-        imageUrl:
-          "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
-        width: 1,
-        height: 1,
-        static: true,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${adminToken}`,
+        `${BACKEND_URL}/api/v1/admin/element`,
+        {
+            imageUrl: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRCRca3wAR4zjPPTzeIY9rSwbbqB6bB2hVkoTXN4eerXOIkJTG1GpZ9ZqSGYafQPToWy_JTcmV5RHXsAsWQC3tKnMlH_CsibsSZ5oJtbakq&usqp=CAE",
+            width: 1,
+            height: 1,
+            static: true,
         },
-      }
+        {
+            headers: {
+                authorization: adminToken, // Using token without "Bearer"
+            },
+        }
     );
 
-    element1Id = element1.data.id;
-    element2Id = element2.data.id;
+    const element1Id = element1.data.id;
+    const element2Id = element2.data.id;
 
-    const map = await axios.post(`${BACKEND_URL}/api/v1/admin/map`, {
-      thumbnail: "https://thumbnail.com/a.png",
-      dimensions: "100x200",
-      name: "100 person interview room",
-      defaultElements: [
+    console.log("Element 1 ID:", element1Id);
+    console.log("Element 2 ID:", element2Id);
+
+    // Create map
+    const map = await axios.post(
+        `${BACKEND_URL}/api/v1/admin/map`,
         {
-          elementId: element1Id,
-          x: 20,
-          y: 20,
+            thumbnail: "https://thumbnail.com/a.png",
+            dimensions: "100x200",
+            name: "100 person interview room",
+            defaultElements: [
+                {
+                    elementId: element1Id,
+                    x: 20,
+                    y: 20,
+                },
+                {
+                    elementId: element2Id,
+                    x: 18,
+                    y: 20,
+                },
+                {
+                    elementId: element2Id,
+                    x: 19,
+                    y: 20,
+                },
+            ],
         },
         {
-          elementId: element2Id,
-          x: 18,
-          y: 20,
-        },
-        {
-          elementId: element2Id,
-          x: 19,
-          y: 20,
+            headers: {
+                authorization: adminToken, // Using token without "Bearer"
+            },
         }
-      ],
-    },{
-			headers: {
-				"authorization": `Bearer ${adminToken}`
-			}
-		});
+    );
 
-		mapId = map.id
+    const mapId = map.data.id;
+    console.log("Map ID:", mapId);
 
-		const space = await axios.post(`${BACKEND_URL}/api/v1/`, {
-			name: "test",
-			dimensions: "100x200",
-			mapId: mapId
-		},
-		{
-			headers: {
-				"authorization": `Bearer ${userToken}`
-			}
-		}
-	)
+    // Create space
+    const space = await axios.post(
+        `${BACKEND_URL}/api/v1/space`,
+        {
+            name: "test",
+            dimensions: "100x200",
+            mapId: mapId,
+        },
+        {
+            headers: {
+                authorization: userToken, // Using token without "Bearer"
+            },
+        }
+    );
 
-	spaceId = space.data.id;
-  }
+    const spaceId = space.data.id;
+    console.log("Space ID:", spaceId);
+}
+
 
   async function setupWS(){
     ws1 = new WebSocket(WS_URL);
@@ -1104,13 +1135,9 @@ describe("websocket tests", ()=> {
       ws2.onopen = r;
     })
 
-
     ws2.onmessage = (event)=> {
       ws2Message.push(JSON.stringify(event.data));
     }
-
-    
-
   }
 
   beforeAll(async ()=> {

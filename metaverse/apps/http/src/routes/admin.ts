@@ -23,11 +23,13 @@ adminRouter.post("/element", adminMiddleWare, async function(req, res){
 				static: parsedData.data.static
 			}
 		})
+		console.log("element created")
 
 		res.status(200).json({
 			id: element.id
 		})
 	} catch(e){
+		console.log("error while creating element",e)
 		res.status(400).json({
 			error: (e as Error).message
 		})
@@ -134,10 +136,12 @@ adminRouter.post("/map", adminMiddleWare,async function(req, res){
 				}
 			}
 		})
+		console.log("map created")
 		res.status(200).json({
 			id: mapCreation.id
 		})
 	} catch(e){
+		console.log("error while creating a map", e);
 		res.status(400).json({
 			error: (e as Error).message
 		})

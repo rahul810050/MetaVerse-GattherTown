@@ -4,7 +4,7 @@ import { OutgoingMessage } from "./types";
 import client from "@repo/db/client"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { JWT_PASSWORD } from "./config";
-[]
+
 
 function getRandomString(length: number){
 	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -27,6 +27,7 @@ export class User{
 		this.id = getRandomString(10);
 		this.x = 0;
 		this.y = 0;
+		this.initHandler();
 	}
 
 	initHandler(){
@@ -34,6 +35,9 @@ export class User{
 			const parsedData = JSON.parse(data.toString());
 			switch (parsedData.type) {
 				case "join": 
+					console.log("user joined")
+					console.log(data)
+					console.log(parsedData.type);
 					const spaceId = parsedData.payload.spaceId;
 					const token = parsedData.payload.token;
 					const userId = (jwt.verify(token, JWT_PASSWORD) as JwtPayload).userId;
@@ -64,7 +68,8 @@ export class User{
 								y: this.y
 							},
 							spaceId: spaceId,
-							users: RoomManager.getInstance().rooms.get(spaceId)?.map((u)=> ({id: u.id})) ?? []
+							// this is to make sure that when the user joins then the user doesnot get himself/ herself  
+							users: RoomManager.getInstance().rooms.get(spaceId)?.filter(x => x.id !== this.id)?.map((u)=> ({id: u.id})) ?? []
 						}
 					})
 
@@ -73,11 +78,10 @@ export class User{
 						payload: {
 							userId: this.userId,
 							x: this.x,
-							y:  this.y	
+							y:  this.y
 						}
 					}, this, this.spaceId!);
 					break;
-
 				case "move":
 					const moveX = parsedData.payload.x;
 					const moveY = parsedData.payload.y;
@@ -113,7 +117,7 @@ export class User{
 		RoomManager.getInstance().broadcast({
 			type: "user-left",
 			payload: {
-				userid: this.userId
+				userId: this.userId
 			}
 		}, this, this.spaceId!)
 		RoomManager.getInstance().removeUser(this, this.spaceId!);

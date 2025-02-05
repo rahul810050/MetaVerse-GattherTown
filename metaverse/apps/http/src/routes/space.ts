@@ -27,6 +27,7 @@ spaceRouter.post("/", userAdminMiddleware ,async (req, res)=> {
 					creatorId: req.userId || "",
 				}
 			})
+			console.log("space created")
 			res.status(200).json({
 				spaceId : space.id
 			})
@@ -70,6 +71,7 @@ spaceRouter.post("/", userAdminMiddleware ,async (req, res)=> {
 			})
 			return space
 		})
+		console.log("space created")
 
 		// sending the space id to the client
 		res.status(200).json({
