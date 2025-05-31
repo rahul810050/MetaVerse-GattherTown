@@ -6,7 +6,7 @@ import { userMiddleWare } from "../middlewares/userMiddleWare";
 import { string } from "zod";
 
 export const userRouter = Router();
-
+// endpoint to update the user metadata like avatarId
 userRouter.post("/metadata", userMiddleWare, async (req, res) => {
 	const parsedData = updateMetadataSchema.safeParse(req.body);
 	// console.log(parsedData.data?.avatarId);
@@ -126,7 +126,7 @@ userRouter.get("/metadata/bulk", async function(req, res){
 			}))
 		})
 	} catch(error){
-		console.log("error while fetching the data from the database", error);
+		// console.log("error while fetching the data from the database", error);
 		res.status(403).json({
 			error: (error as Error).message
 		})

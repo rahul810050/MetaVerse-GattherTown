@@ -4,7 +4,7 @@ import { adminMiddleWare } from "../middlewares/adminMiddleWare";
 import client from '@repo/db/client'
 
 export const adminRouter = Router();
-
+// endpoint to create an element
 adminRouter.post("/element", adminMiddleWare, async function(req, res){
 	const parsedData = createElementSchema.safeParse(req.body);
 	if(!parsedData.success){

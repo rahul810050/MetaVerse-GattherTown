@@ -149,7 +149,9 @@ router.get("/avatars", async (req, res)=> {
       }))
     })
   } catch(e){
-    error: (e as Error).message
+    res.status(400).json({
+      error: (e as Error).message
+    })
   }
 
 })
